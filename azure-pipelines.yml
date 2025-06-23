@@ -1,0 +1,25 @@
+trigger:
+    branches:
+        include:
+            - master
+    paths:
+        include:
+            - .
+pool:
+    vmImage: 'ubuntu-latest'
+
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '18.x'
+    displayName: 'Install Node.js'
+  - script:
+        npm install
+        npm run build
+    displayName: 'Install dependancies and build'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+     PathtoPublish: 'dist'
+     ArtifactName: 'drop'
+     publishLocation: 'Container'
