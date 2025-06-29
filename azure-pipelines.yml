@@ -13,10 +13,14 @@ steps:
     inputs:
       versionSpec: '18.x'
     displayName: 'Install Node.js'
+
   - script:
         npm install
         npm run build
     displayName: 'Install dependancies and build'
+    
+  - script:
+      ls -a 
 
   - task: PublishBuildArtifacts@1
     inputs:
