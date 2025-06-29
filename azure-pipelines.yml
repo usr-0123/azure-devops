@@ -6,7 +6,7 @@ trigger:
         include:
             - .
 pool:
-    vmImage: 'office-laptop'
+    name: 'Default'
 
 steps:
   - task: NodeTool@0
