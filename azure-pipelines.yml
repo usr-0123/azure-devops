@@ -19,7 +19,7 @@ steps:
         npm run build
     displayName: 'Install dependancies and build'
     
-  - script: ls -a 
+  - script: dir
     displayName: 'List files and folders in the current directory'
 
   - task: PublishBuildArtifacts@1
