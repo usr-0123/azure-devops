@@ -15,12 +15,12 @@ steps:
     displayName: 'Install Node.js'
 
   - script:
-        npm install
+        npm ci
         npm run build
     displayName: 'Install dependancies and build'
     
-  - script:
-      ls -a 
+  - script: ls -a 
+    displayName: 'List files and folders in the current directory'
 
   - task: PublishBuildArtifacts@1
     inputs:
