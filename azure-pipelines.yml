@@ -9,22 +9,58 @@ trigger:
 pool:
     name: 'Default'
 
-steps:
+jobs:
+- job: install_node
+  steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '18.x'
+      displayName: 'Install Node.js'
+
+- job: project_ui_job
+  steps:
   - task: NodeTool@0
     inputs:
-      versionSpec: '18.x'
-    displayName: 'Install Node.js'
-
-  - script:
-        npm ci
-        npm run build
+      VersionSpec: '18.x'
     displayName: 'Install dependancies and build'
+
+  - script: |
+      cd ui
+      npm ci
     
-  - script: dir
+    displayName: 'NPM CI'
+
+  - task: NodeTool@0
+    inputs:
+      VersionSpec: '18.x'
+    displayName: 'Run project build'
+
+  - script: |
+      cd ui
+      dir
+      npm run build
+
+  - task: NodeTool@0
+    inputs:
+      VersionSpec: '18.x'
     displayName: 'List files and folders in the current directory'
 
-  - task: PublishBuildArtifacts@1
+  - script: |
+      dir
+
+  - task: ArchiveFiles@2
+    displayName: 'Archive UI build files'  
     inputs:
-     PathtoPublish: 'dist'
-     ArtifactName: 'drop'
-     publishLocation: 'Container'
+      rootFolderOrFile: '$(Build.SourcesDirectory)/ui/dist'
+      includeRootFolder: false
+      archiveFile: '$(Build.ArtifactDirectory)/$(Build.BuildId).zip'
+      archiveType: 'zip'
+      replaceExistingArchive: true
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish UI artifact'
+    inputs:
+      targetPath: '$(Build.ArtifactDirectory)/$(Build.BuildId).zip'
+      ArtifactName: 'ui_artifact'
+  - script: |
+      cd ui/dist
