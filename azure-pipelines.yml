@@ -4,7 +4,8 @@ trigger:
             - master
     paths:
         include:
-            - .
+            - ui
+            - api
 pool:
     name: 'Default'
 
