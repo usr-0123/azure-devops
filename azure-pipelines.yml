@@ -44,7 +44,7 @@ jobs:
     displayName: 'Archive UI build files'  
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
     inputs:
-      rootFolderOrFile: '$(Build.SourcesDirectory)/ui/dist'
+      rootFolderOrFile: '$(Build.SourcesDirectory)/ui_1/dist'
       includeRootFolder: false
       archiveFile: '$(Build.ArtifactDirectory)/$(Build.BuildId).zip'
       archiveType: 'zip'
@@ -88,7 +88,7 @@ jobs:
       displayName: 'Archive API build files'  
       condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
       inputs:
-        rootFolderOrFile: '$(Build.SourcesDirectory)/api/dist'
+        rootFolderOrFile: '$(Build.SourcesDirectory)/ui_2/dist'
         includeRootFolder: false
         archiveFile: '$(Build.ArtifactDirectory)/$(Build.BuildId)_api.zip'
         archiveType: 'zip'
