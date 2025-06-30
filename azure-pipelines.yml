@@ -2,10 +2,12 @@ trigger:
     branches:
         include:
             - master
+
     paths:
         include:
             - ui
             - api
+
 pool:
     name: 'Default'
 
@@ -35,22 +37,12 @@ jobs:
 
   - script: |
       cd ui
-      dir
       npm run build
     displayName: 'NPM RUN BUILD'
 
-  - task: NodeTool@0
-    inputs:
-      versionSpec: '18.x'
-    displayName: 'List files and folders in the current directory'
-
-  - script: |
-      cd ui
-      dir
-    displayName: 'DIR command output'
-
   - task: ArchiveFiles@2
     displayName: 'Archive UI build files'  
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
     inputs:
       rootFolderOrFile: '$(Build.SourcesDirectory)/ui/dist'
       includeRootFolder: false
@@ -60,12 +52,10 @@ jobs:
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish UI artifact'
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
     inputs:
       targetPath: '$(Build.ArtifactDirectory)/$(Build.BuildId).zip'
       artifact: 'ui_artifact'
-      
-  - script: |
-      cd ui/dist
 
 - job: project_api_job
   steps:
@@ -96,6 +86,7 @@ jobs:
 
     - task: ArchiveFiles@2
       displayName: 'Archive API build files'  
+      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
       inputs:
         rootFolderOrFile: '$(Build.SourcesDirectory)/api/dist'
         includeRootFolder: false
@@ -105,6 +96,7 @@ jobs:
 
     - task: PublishPipelineArtifact@1
       displayName: 'Publish API artifact'
+      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
       inputs:
         targetPath: '$(Build.ArtifactDirectory)/$(Build.BuildId)_api.zip'
         artifact: 'api_artifact'
