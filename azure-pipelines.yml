@@ -13,7 +13,7 @@ pool:
 
 jobs:
 
-- job: project_ui_job
+- job: first_project_ui_job
   steps:
   - task: NodeTool@0
     inputs:
@@ -38,7 +38,7 @@ jobs:
   - script: |
       cd ui
       npm run build
-    displayName: 'NPM RUN BUILD'
+    displayName: 'NPM RUN BUILD for first ui project'
 
   - task: ArchiveFiles@2
     displayName: 'Archive UI build files'  
@@ -57,7 +57,7 @@ jobs:
       targetPath: '$(Build.ArtifactDirectory)/$(Build.BuildId).zip'
       artifact: 'ui_artifact'
 
-- job: project_api_job
+- job: second_project_ui_job
   steps:
     - task: NodeTool@0
       inputs:
@@ -77,12 +77,12 @@ jobs:
     - task: NodeTool@0
       inputs:
         versionSpec: '18.x'
-      displayName: 'Run API build'
+      displayName: 'Run project build'
 
     - script: |
         cd api
         npm run build
-      displayName: 'NPM RUN BUILD for API'
+      displayName: 'NPM RUN BUILD for second ui project'
 
     - task: ArchiveFiles@2
       displayName: 'Archive API build files'  
