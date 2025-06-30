@@ -10,15 +10,14 @@ pool:
     name: 'Default'
 
 jobs:
-- job: install_node
-  steps:
-    - task: NodeTool@0
-      inputs:
-        versionSpec: '18.x'
-      displayName: 'Install Node.js'
 
 - job: project_ui_job
   steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '18.x'
+    displayName: 'Install Node.js'
+
   - task: NodeTool@0
     inputs:
       versionSpec: '18.x'
@@ -64,12 +63,17 @@ jobs:
     inputs:
       targetPath: '$(Build.ArtifactDirectory)/$(Build.BuildId).zip'
       artifact: 'ui_artifact'
+      
   - script: |
       cd ui/dist
 
 - job: project_api_job
-  dependsOn: project_ui_job
   steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '18.x'
+      displayName: 'Install Node.js'
+
     - task: NodeTool@0
       inputs:
         versionSpec: '18.x'
