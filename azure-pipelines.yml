@@ -21,32 +21,34 @@ jobs:
   steps:
   - task: NodeTool@0
     inputs:
-      VersionSpec: '18.x'
-    displayName: 'Install dependancies and build'
+      versionSpec: '18.x'
+    displayName: 'Install dependancies'
 
   - script: |
       cd ui
       npm ci
-    
     displayName: 'NPM CI'
 
   - task: NodeTool@0
     inputs:
-      VersionSpec: '18.x'
+      versionSpec: '18.x'
     displayName: 'Run project build'
 
   - script: |
       cd ui
       dir
       npm run build
+    displayName: 'NPM RUN BUILD'
 
   - task: NodeTool@0
     inputs:
-      VersionSpec: '18.x'
+      versionSpec: '18.x'
     displayName: 'List files and folders in the current directory'
 
   - script: |
+      cd ui
       dir
+    displayName: 'DIR command output'
 
   - task: ArchiveFiles@2
     displayName: 'Archive UI build files'  
@@ -57,10 +59,48 @@ jobs:
       archiveType: 'zip'
       replaceExistingArchive: true
 
-  - task: PublishBuildArtifacts@1
+  - task: PublishPipelineArtifact@1
     displayName: 'Publish UI artifact'
     inputs:
       targetPath: '$(Build.ArtifactDirectory)/$(Build.BuildId).zip'
-      ArtifactName: 'ui_artifact'
+      artifact: 'ui_artifact'
   - script: |
       cd ui/dist
+
+- job: project_api_job
+  dependsOn: project_ui_job
+  steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '18.x'
+      displayName: 'Install API dependencies'
+
+    - script: |
+        cd api
+        npm ci
+      displayName: 'NPM CI for API'
+
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '18.x'
+      displayName: 'Run API build'
+
+    - script: |
+        cd api
+        npm run build
+      displayName: 'NPM RUN BUILD for API'
+
+    - task: ArchiveFiles@2
+      displayName: 'Archive API build files'  
+      inputs:
+        rootFolderOrFile: '$(Build.SourcesDirectory)/api/dist'
+        includeRootFolder: false
+        archiveFile: '$(Build.ArtifactDirectory)/$(Build.BuildId)_api.zip'
+        archiveType: 'zip'
+        replaceExistingArchive: true
+
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish API artifact'
+      inputs:
+        targetPath: '$(Build.ArtifactDirectory)/$(Build.BuildId)_api.zip'
+        artifact: 'api_artifact'
