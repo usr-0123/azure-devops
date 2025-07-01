@@ -130,7 +130,7 @@ jobs:
     - task: ArchiveFiles@2
       displayName: 'Archive next ui build files'
       inputs:
-        rootFolderOrFile: '$(Build.SourcesDirectory)/ui/out'
+        rootFolderOrFile: '$(Build.SourcesDirectory)/ui_next/out'
         includeRootFolder: false
         archiveType: 'zip'
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
