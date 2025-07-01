@@ -7,6 +7,7 @@ trigger:
         include:
             - ui_1
             - ui_2
+            - ui_next
 
 pool:
     name: 'Default'
@@ -100,3 +101,48 @@ jobs:
       inputs:
         targetPath: '$(Build.ArtifactDirectory)/$(Build.BuildId)_api.zip'
         artifact: 'api_artifact'
+
+
+- job: next_project_ui_job
+
+  steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '18.x'
+      displayName: 'Install Node.js'
+
+    - script: |
+        cd ui_next
+        npm ci
+      displayName: 'npm ci'
+
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '18.x'
+      displayName: 'Build next ui'
+
+    - script: |
+        cd ui_next
+        dir
+        npm run build
+      displayName: 'npm run build'
+
+    - task: ArchiveFiles@2
+      displayName: 'Archive next ui build files'
+      inputs:
+        rootFolderOrFile: '$(Build.SourcesDirectory)/ui_next/out'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+        replaceExistingArchive: true
+
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish ui artifact'
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+        artifact: 'next_ui_job'
+
+    - script: |
+        cd ui/out
+        dir
+      displayName: 'List the files inside the out folder'
