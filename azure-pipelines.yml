@@ -144,5 +144,5 @@ jobs:
 
     - script: |
         cd ui/out
-        ls -la
+        dir
       displayName: 'List the files inside the out folder'
